@@ -7,29 +7,29 @@ This is a template for the IMLV final project. It is based on the template creat
 
 ### Copy this template (GitHub)
 
-- [ ] 1. Click the green "Use this template" button above.  DO NOT FORK THE REPO. Choose a descriptive name for your repo, such as "federalbudget" or "AIDSdeaths".  (If you change your mind before you do any work, delete your new repo and start over.)
+- [:ballot_box_with_check:] 1. Click the green "Use this template" button above.  DO NOT FORK THE REPO. Choose a descriptive name for your repo, such as "federalbudget" or "AIDSdeaths".  (If you change your mind before you do any work, delete your new repo and start over.)
 
-- [ ] 2. In the Description field, write: "Bookdown source files for IMLV final project".
+- [:ballot_box_with_check:] 2. In the Description field, write: "Bookdown source files for IMLV final project".
 
 ### Set up Pages (GitHub)
 
-- [ ] 1. On the home page of your repo, click Settings. Click the "Pages" section on the left. In the **Build and Deployment** section, set **Source** to "Deploy from a branch" (Classic Pages experience) and **Branch** to **main** with **/docs** folder. Click Save. Above the **Build and Deployment** section, a box will appear with your book's URL. Copy the URL. (Note that sometimes there is a delay until your book actually appears at that URL. If it doesn't appear after a few minutes, make a change and commit it to trigger a GitHub Pages build.)	
+- [:ballot_box_with_check:] 1. On the home page of your repo, click Settings. Click the "Pages" section on the left. In the **Build and Deployment** section, set **Source** to "Deploy from a branch" (Classic Pages experience) and **Branch** to **main** with **/docs** folder. Click Save. Above the **Build and Deployment** section, a box will appear with your book's URL. Copy the URL. (Note that sometimes there is a delay until your book actually appears at that URL. If it doesn't appear after a few minutes, make a change and commit it to trigger a GitHub Pages build.)	
 
-- [ ] 2. Click the gear button near "About" on the home page of the repo and paste your book URL into the **Website** field that appears on the right.
+- [:ballot_box_with_check:] 2. Click the gear button near "About" on the home page of the repo and paste your book URL into the **Website** field that appears on the right.
 
 ### Copy the repo link (GitHub)
 
-- [ ] 1. Click the green Code button and copy the link under HTTPS. It should have the format: `https://github.com/[USERNAME]/[REPO NAME].git`
+- [:ballot_box_with_check:] 1. Click the green Code button and copy the link under HTTPS. It should have the format: `https://github.com/[USERNAME]/[REPO NAME].git`
 
 ### Clone the repo (RStudio)
 
-- [ ] 1. Clone your new repo with *File, New Project..., Version Control, Git* in RStudio. You will need to paste the link from the previous step in the Repository URL box.
+- [:ballot_box_with_check:] 1. Clone your new repo with *File, New Project..., Version Control, Git* in RStudio. You will need to paste the link from the previous step in the Repository URL box.
 
 ### Edit some key files (RStudio)
 
-- [ ] 1. In `index.Rmd`, change YOUR TITLE HERE to your title.
+- [:ballot_box_with_check:] 1. In `index.Rmd`, change YOUR TITLE HERE to your title.
 
-- [ ] 2. In `index.Rmd`, change YOUR NAMES HERE to your names.
+- [:ballot_box_with_check:] 2. In `index.Rmd`, change YOUR NAMES HERE to your names.
 
 - [ ] 3. In `_bookdown.yml`, change YOUR GITHUB USERNAME to your GitHub username in the two places it appears.
 
