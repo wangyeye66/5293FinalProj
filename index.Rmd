@@ -17,11 +17,18 @@ site: bookdown::bookdown_site
 
 ## Modeling Goal
 
-Through this project, I would like to learn how sales will differ based on date, time, unit price and country. Then construct a *Decision Tree* and a *Logistic Regression* to predict the sales based on the information we have.
+Through this project, I would like to learn how sales will differ based on date, time, unit price and country. I will use three models to predict the sales, ranging from the least interpretable one(Random Forest) to the most(Logistic Regression). By evaluating the accuracy of each model, this project will answer the following questions:
+
+-   Do the models have concurrent or conflicting interpretations? Can you explain why?
+
+-   Do some models offer more insight than others?
+
+-   Is it worth losing interpretability/increasing model complexity? Can the simpler model do just as well? Why or why not?
+
+-   To what extent is it possible to answer your questions of interest with the models you have chosen? What are their limitations?
 
 ## Methods
 
-1.  K-means for clustering
-2.  Decision trees
-3.  Logistic regression
-4.  LIME
+1.  Random Forest
+2.  K-means
+3.  Logistic Regression
