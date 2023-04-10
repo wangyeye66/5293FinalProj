@@ -24,3 +24,4 @@ Through this project, I would like to learn how sales will differ based on date,
 1.  K-means for clustering
 2.  Decision trees
 3.  Logistic regression
+4.  LIME
