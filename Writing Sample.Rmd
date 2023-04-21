@@ -1,0 +1,10 @@
+---
+title: "Writing Sample"
+author: "Han Wang"
+date: "2023-04-10"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+![This line plot shows the changes of online retail sales versus the change in month using the dataset **Online Retail Data Set** from UCI ML repo. From the figure, we see the sale is high from September to December. November is the peak. This figure makes sense because that there are many festivals during the months form September to December, such as Christmas, Thanksgiving, New Year, etc,. We may infer that people go online shopping for gifts. There is huge drop on January, and the total sale is relatively low for the rest of the year. It is probably because of limit budget and there are also not so many festivals from January to August.](images/image-484513981.png){alt="This line plot shows the changes of online retail sales versus the change in month using the dataset Online Retail Data Set from UCI ML repo. From the figure, we see the sale is high from September to December. November is the peak. This figure makes sense because that there are many festivals during the months form September to December, such as Christmas, Thanksgiving, New Year, etc,. We may infer that people go online shopping for gifts. There is huge drop on January, and the total sale is relatively low for the rest of the year. It is probably because of limit budget and there are also not so many festivals from January to August."}
