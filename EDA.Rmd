@@ -1,0 +1,141 @@
+---
+title: "EDA"
+author: "Han Wang"
+date: "2023-04-10"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+```
+
+```{r}
+library(readxl)
+library(tidyverse)
+library(lubridate)
+
+data <- read_excel('online_retail.xlsx')
+summary(data)
+```
+
+```{r}
+data %>% is.na %>% colSums
+```
+
+There are many NAs in the column CustomerID. Since this column is irrelavent to our analysis, we can simply remove it.
+
+### Data Cleaning
+
+```{r}
+# remove free orders
+data <- data %>%
+  filter(UnitPrice != 0)
+
+# remove column CustomerID
+data <- data %>% select(-c(CustomerID))
+summary(data)
+```
+
+### Data pre-processing
+
+```{r}
+# Transform description and country as factor
+data <- data %>% mutate(Description = as.factor(Description),
+                        Country = as.factor(Country))
+
+# datetime processing
+data$date <- format(data$InvoiceDate, "%m/%d/%Y")
+data$month <- format(data$InvoiceDate, "%B")
+data$week <- format(data$InvoiceDate, "%A")
+data$time <- format(data$InvoiceDate, "%H")
+
+# sales
+data$Sales <- data$Quantity*data$UnitPrice
+
+head(data)
+```
+
+### save cleaned data
+```{r}
+mydata <- subset(data, select = -c(InvoiceNo, StockCode, Description, InvoiceDate, time))
+write.csv(mydata, "./online_retail_cleaned.csv", row.names=TRUE)
+```
+
+### Exploratory Data Analysis
+
+1. Most sold Products
+
+```{r}
+# top 10 products
+p1 <- data %>% group_by(Description, StockCode) %>%
+  summarise(count = n()) %>%
+  arrange(desc(count)) %>%
+  head(10)
+
+# plot
+p1 %>% ggplot(aes(x=Description, y=count)) +
+  geom_bar(stat = 'identity', fill = 'darkblue')+
+  coord_flip() + theme_classic()+
+  xlab('Products') +
+  ylab('Number of products sold') +
+  ggtitle('Most Sold Products by Customers')
+```
+2. Total Sales by Hour
+
+```{r}
+# calculate total sales in hours
+hourly <- data %>%
+  group_by(time) %>%
+  summarise(Sales = sum(Sales))
+
+# line plot
+ggplot(data = hourly, aes(x= time, y = Sales, group =1))+
+  ggtitle('Total Sales by Hour')+
+  geom_line(colour = 'orange', size= 1.2) +
+  geom_point(color = 'darkgreen')+
+  theme(plot.title = element_text(hjust = 0.5, lineheight = 0.8, face = 'bold')) +
+  ylab('Total sales')+
+  xlab('Hours')
+
+```
+3. Total Sales by Day
+```{r}
+# calculate total sales on daily basis
+daily <- data%>%
+  group_by(week)%>%
+  summarise(Sales = sum(Sales)) %>%
+  arrange(week)
+
+daily$week <- factor(daily$week, levels =
+              c("Sunday","Monday","Tuesday", "Wednesday", "Thursday",   "Friday"))
+daily <- daily[order(daily$week),]
+
+#line plot
+ggplot(data = daily, aes(x= week, y = Sales, group = 1))+
+  ggtitle('Total Sales by Day') +
+  geom_line(color ='skyblue',size = 1.2)+
+  geom_point(color = 'darkblue')+
+  theme(plot.title =element_text(hjust = 0.5, lineheight = 0.8, face = 'bold'))+
+  ylab('Total Sales') +
+  xlab('Days of the week')
+
+```
+
+4. Total Sales by Month
+
+```{r}
+# calculating the total sales by month 
+p4 <- data %>%
+  group_by(month)%>%
+  summarise(Sales=sum(Sales))%>%
+  arrange(match(month, month.name))
+
+#Line plot
+ggplot(data=p4,aes(x=ordered(month, month.name), y=Sales, group =1))+ggtitle("Total Sales by Month ")+
+  geom_line(color = "maroon", size = 1.2)+
+  geom_point(color="darkblue")+
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),plot.title = element_text(hjust=0.5, lineheight = 0.8, face = "bold"))+
+  ylab("Total Sales") + xlab("Months of the Year")
+
+```

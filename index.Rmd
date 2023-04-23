@@ -17,7 +17,7 @@ site: bookdown::bookdown_site
 
 ## Modeling Goal
 
-Through this project, I would like to learn how sales will differ based on date, time, unit price and country. I will use three models to predict the sales, ranging from the least interpretable one(Random Forest) to the most(Logistic Regression). By evaluating the accuracy of each model, this project will answer the following questions:
+Through this project, I would like to learn how `sales` will differ based on `date`, `time`, `unit price` and `country`. I will use three models to predict the sales, ranging from the least interpretable one(Random Forest) to the most(Logistic Regression). By evaluating the accuracy of each model, this project will answer the following questions:
 
 -   Do the models have concurrent or conflicting interpretations? Can you explain why?
 
