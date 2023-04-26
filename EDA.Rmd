@@ -153,7 +153,7 @@ ggplot(data=p5,aes(x=ordered(month, month.name), y=Sales, group =1))+ggtitle("To
 
 ```
 
-### Check for Multicollinearity
+### Change Categorical to Numerical
 ```{r}
 mydata <- subset(data, select = -c(InvoiceNo, StockCode, Description, InvoiceDate,date, Country))
 mydata$month <-recode(mydata$month,December = 12, November =11, October = 10,
@@ -162,6 +162,7 @@ mydata$month <-recode(mydata$month,December = 12, November =11, October = 10,
 mydata$week <-recode(mydata$week, Monday = 1, Tuesday =2, Wednesday =3,
                      Thursday =4, Friday =5, Sunday =7)
 mydata$time <- as.numeric(mydata$time)
+# Check for Multicollinearity
 cor(subset(mydata, select = -Sales))
 ```
 
@@ -188,7 +189,6 @@ Almost a linear curve, that means we have good choice of dependent variables.
 
 The original dataset has around 540,000 pieces of data, to make it computationally efficient, I randomly selected 50,000 data.
 ```{r}
-mydata <- subset(data, select = -c(InvoiceNo, StockCode, Description, InvoiceDate,date, Country))
 mydata.sample <- mydata[sample(nrow(mydata), "50000"), ]
 
 write.csv(mydata, "./online_retail_cleaned.csv", row.names=TRUE)
