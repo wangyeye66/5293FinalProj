@@ -1,8 +1,0 @@
-proposal-descriptions
-about-dataset
-modeling-goal
-methods
-model-1
-model-2
-model-3
-reflections

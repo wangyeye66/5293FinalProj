@@ -1,0 +1,283 @@
+---
+title: "Final Project Proposal "
+author: "Han Wang"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+---
+```{r include=FALSE, cache=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE
+)
+```
+
+# Proposal Descriptions
+
+## About Dataset
+
+**Data:** The data I am going to use in my final project is called **Online Retail Data Set** from UCI ML repo. Here's the link for the dataset: <https://archive.ics.uci.edu/ml/datasets/online+retail>
+
+**Source:** Dr Daqing Chen, Director: Public Analytics group. chend '\@' lsbu.ac.uk, School of Engineering, London South Bank University, London SE1 0AA, UK.
+
+**Information:** This is a transnational data set which contains all the transactions occurring between 01/12/2010 and 09/12/2011 for a UK-based and registered non-store online retail.The company mainly sells unique all-occasion gifts. Many customers of the company are wholesalers.
+
+## Modeling Goal
+
+Through this project, I would like to learn how `sales` will differ based on `month`, `week`, `time`, `unit price` and `quantity`. I will use three models to predict the sales, ranging from the least interpretable one(Random Forest) to the most(Linear Regression). By evaluating the accuracy of each model, this project will answer the following questions:
+
+-   Do the models have concurrent or conflicting interpretations? Can you explain why?
+
+-   Do some models offer more insight than others?
+
+-   Is it worth losing interpretability/increasing model complexity? Can the simpler model do just as well? Why or why not?
+
+-   To what extent is it possible to answer your questions of interest with the models you have chosen? What are their limitations?
+
+## Methods
+
+1.  Random Forest Regression
+2.  Decision Trees Regression
+3.  Linear Regression
+
+<!--chapter:end:index.Rmd-->
+
+```{r include=FALSE, cache=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE
+)
+```
+# [Model 1] Random Forest
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+```
+
+```{r}
+library(randomForest)
+
+data <- read.csv('online_retail_cleaned.csv')
+data.adj <- read.csv('online_retail_cleaned_adjusted.csv')
+# str(data)
+```
+
+```{r}
+# train test split
+set.seed(111)
+ind <- sample(2, nrow(data), replace = TRUE, prob = c(0.75, 0.25))
+trainset<- data[ind==1, ]
+trainset <- subset(trainset, select = -X)
+testset <- data[ind==2, ]
+testset <- subset(testset, select = -X)
+
+trainset.adj<- data.adj[ind==1, ]
+trainset.adj <- subset(trainset.adj, select = -X)
+testset.adj <- data.adj[ind==2, ]
+testset.adj <- subset(testset.adj, select = -X)
+```
+
+### Perform Random Forest Regression
+```{r}
+# perform random forest regression
+rf <- randomForest(Sales~., data =trainset, ntree=1000, importance=TRUE)
+
+# perform random forest regression on dataset without outliers
+rf.adj <- randomForest(Sales~., data = trainset.adj, ntree = 1000, importance = TRUE)
+```
+
+```{r}
+# model without dropping outliers
+print(rf)
+pred <- predict(rf, newdata = subset(testset, select = -Sales))
+print(paste('The RMSE is:', RMSE(pred = pred, obs = testset$Sales)))
+
+# visualize predict value 
+plot(predict(rf, newdata = subset(testset, select = -Sales)), testset$Sales, 
+     main = 'Predicted values compared with True values')
+```
+We can see from the image above that there are many outliers in our data, which reduces prediction performance. Furthermore, the RMSE for this model is around 97 and only 10% of variacne can be explained by this model. We must eliminate the outliers to get a better result.
+
+```{r}
+print(rf.adj)
+pred <- predict(rf.adj, newdata = subset(testset.adj, select = -Sales))
+print(paste('The RMSE is:', RMSE(pred = pred, obs = testset.adj$Sales)))
+
+plot(predict(rf.adj, newdata = subset(testset.adj, select = -Sales)), testset.adj$Sales, 
+     main = 'Predicted values compared with True values')
+```
+We can see from the above figure that the data points center together after we remove the outliers and retrain the random forest model. The variance explained by the model reach to almost 80%. The RMSE drops to 4. Overall, the prediction accuracy improves significantly.
+
+
+### Interpretation of Random Forest Model
+```{r}
+# partial dependency plots
+library(pdp)
+var <- trainset.adj |>
+  select(-Sales) |>
+  select(where(is.numeric)) |>
+  names()
+
+df <- map(var, ~(partial(rf.adj, pred.var = .x))) |>
+  map_df(pivot_longer, cols = 1)
+
+ggplot(df, aes(value, yhat)) +
+  geom_line()+
+  facet_wrap(~name, scales = 'free_x')
+
+#df <- partial(rf.adj, pred.var = "month")
+#ggplot(df, aes(month, yhat)) + geom_line()
+
+
+```
+```{r}
+library(vip)
+vip(rf.adj, method ='firm')
+```
+```{r}
+library(lime)
+explainer <- lime(trainset.adj, as_classifier(rf.adj),
+                  bin_continuous =  TRUE, quantile_bins = TRUE)
+explanation <-  lime::explain(testset.adj, explainer, n_labels = 1, n_features = 5)
+explanation |>
+  plot_features()
+```
+
+<!--chapter:end:model1.Rmd-->
+
+```{r include=FALSE, cache=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE
+)
+```
+# [Model 2] Tree Regression
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+```
+
+```{r}
+library(rpart)
+
+data <- read.csv('online_retail_cleaned_adjusted.csv')
+# str(data)
+```
+
+```{r}
+# train test split
+set.seed(111)
+ind <- sample(2, nrow(data), replace = TRUE, prob = c(0.75, 0.25))
+trainset<- data[ind==1, ]
+trainset <- subset(trainset, select = -X)
+testset <- data[ind==2, ]
+testset <- subset(testset, select = -X)
+```
+
+```{r}
+# Perform Regression Tree
+library(rpart.plot)
+dt <- rpart(Sales~., method = 'anova',
+            control = list(minsplit = 10, maxdepth= 12, xval =10, cp = 0),
+            data = trainset)
+
+rpart.plot(dt)
+```
+
+
+
+```{r}
+# 
+pred <- predict(dt, subset(testset, select = -Sales), method = 'anova')
+plot(predict(dt, newdata = subset(testset, select = -Sales)), testset$Sales)
+RMSE(pred = pred, obs = testset$Sales)
+```
+
+```{r}
+
+start_time <- Sys.time()
+end_time <- Sys.time()
+time <- end_time-start_time
+time
+
+```
+
+<!--chapter:end:model2.Rmd-->
+
+```{r include=FALSE, cache=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE
+)
+```
+# [Model 3] Linear Regression
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+```
+
+```{r}
+library(readxl)
+library(tidyverse)
+library(lubridate)
+library(randomForest)
+library(datasets)
+library(caret)
+library(rpart)
+
+data <- read.csv('online_retail_cleaned.csv')
+# str(data)
+```
+
+```{r}
+# train test split
+set.seed(111)
+ind <- sample(2, nrow(data), replace = TRUE, prob = c(0.75, 0.25))
+trainset<- data[ind==1, ]
+trainset <- subset(trainset, select = -X)
+testset <- data[ind==2, ]
+testset <- subset(testset, select = -X)
+```
+
+```{r}
+lr <- lm(Sales~., data = trainset)
+summary(lr)
+plot(predict(lr, newdata = subset(testset, select = -Sales)), testset$Sales)
+```
+
+```{r}
+pred <- predict(lr, newdata = subset(testset, select = -Sales))
+RMSE(pred = pred, obs = testset$Sales)
+```
+
+```{r}
+lr2 <- lm(Sales~ Quantity + UnitPrice + time, data = trainset)
+summary(lr2)
+plot(predict(lr2, newdata = subset(testset, select = -Sales)), testset$Sales)
+```
+
+```{r}
+pred <- predict(lr2, newdata = subset(testset, select = -Sales))
+RMSE(pred = pred, obs = testset$Sales)
+```
+
+<!--chapter:end:model3.Rmd-->
+
+```{r include=FALSE, cache=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE
+)
+```
+# Reflections
+
+
+<!--chapter:end:reflections.Rmd-->
+
