@@ -6,28 +6,90 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 ```
 
 ```{r}
-library(readxl)
-library(tidyverse)
-library(lubridate)
 library(randomForest)
-library(datasets)
-library(caret)
 
 data <- read.csv('online_retail_cleaned.csv')
+data.adj <- read.csv('online_retail_cleaned_adjusted.csv')
 # str(data)
 ```
 
 ```{r}
 # train test split
-set.seed(5293)
+set.seed(111)
 ind <- sample(2, nrow(data), replace = TRUE, prob = c(0.75, 0.25))
-train <- data[ind==1, ]
-train <- subset(train, select = -c(Quantity, X, date))
-test <- data[ind==2, ]
-test <- subset(test, select = -c(Quantity, X, date)) 
+trainset<- data[ind==1, ]
+trainset <- subset(trainset, select = -X)
+testset <- data[ind==2, ]
+testset <- subset(testset, select = -X)
+
+trainset.adj<- data.adj[ind==1, ]
+trainset.adj <- subset(trainset.adj, select = -X)
+testset.adj <- data.adj[ind==2, ]
+testset.adj <- subset(testset.adj, select = -X)
+```
+
+### Perform Random Forest Regression
+```{r}
+# perform random forest regression
+rf <- randomForest(Sales~., data =trainset, ntree=1000, importance=TRUE)
+
+# perform random forest regression on dataset without outliers
+rf.adj <- randomForest(Sales~., data = trainset.adj, ntree = 1000, importance = TRUE)
 ```
 
 ```{r}
-rf <- randomForest(Sales~., data = train)
+# model without dropping outliers
+print(rf)
+pred <- predict(rf, newdata = subset(testset, select = -Sales))
+print(paste('The RMSE is:', RMSE(pred = pred, obs = testset$Sales)))
 
+# visualize predict value 
+plot(predict(rf, newdata = subset(testset, select = -Sales)), testset$Sales, 
+     main = 'Predicted values compared with True values')
+```
+We can see from the image above that there are many outliers in our data, which reduces prediction performance. Furthermore, the RMSE for this model is around 97 and only 10% of variacne can be explained by this model. We must eliminate the outliers to get a better result.
+
+```{r}
+print(rf.adj)
+pred <- predict(rf.adj, newdata = subset(testset.adj, select = -Sales))
+print(paste('The RMSE is:', RMSE(pred = pred, obs = testset.adj$Sales)))
+
+plot(predict(rf.adj, newdata = subset(testset.adj, select = -Sales)), testset.adj$Sales, 
+     main = 'Predicted values compared with True values')
+```
+We can see from the above figure that the data points center together after we remove the outliers and retrain the random forest model. The variance explained by the model reach to almost 80%. The RMSE drops to 4. Overall, the prediction accuracy improves significantly.
+
+
+### Interpretation of Random Forest Model
+```{r}
+# partial dependency plots
+library(pdp)
+var <- trainset.adj |>
+  select(-Sales) |>
+  select(where(is.numeric)) |>
+  names()
+
+df <- map(var, ~(partial(rf.adj, pred.var = .x))) |>
+  map_df(pivot_longer, cols = 1)
+
+ggplot(df, aes(value, yhat)) +
+  geom_line()+
+  facet_wrap(~name, scales = 'free_x')
+
+#df <- partial(rf.adj, pred.var = "month")
+#ggplot(df, aes(month, yhat)) + geom_line()
+
+
+```
+```{r}
+library(vip)
+vip(rf.adj, method ='firm')
+```
+```{r}
+library(lime)
+explainer <- lime(trainset.adj, as_classifier(rf.adj),
+                  bin_continuous =  TRUE, quantile_bins = TRUE)
+explanation <-  lime::explain(testset.adj, explainer, n_labels = 1, n_features = 5)
+explanation |>
+  plot_features()
 ```

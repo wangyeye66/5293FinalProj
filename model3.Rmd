@@ -1,1 +1,51 @@
-# [Model 3]
+# [Model 3] Linear Regression
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+```
+
+```{r}
+library(readxl)
+library(tidyverse)
+library(lubridate)
+library(randomForest)
+library(datasets)
+library(caret)
+library(rpart)
+
+data <- read.csv('online_retail_cleaned.csv')
+# str(data)
+```
+
+```{r}
+# train test split
+set.seed(111)
+ind <- sample(2, nrow(data), replace = TRUE, prob = c(0.75, 0.25))
+trainset<- data[ind==1, ]
+trainset <- subset(trainset, select = -X)
+testset <- data[ind==2, ]
+testset <- subset(testset, select = -X)
+```
+
+```{r}
+lr <- lm(Sales~., data = trainset)
+summary(lr)
+plot(predict(lr, newdata = subset(testset, select = -Sales)), testset$Sales)
+```
+
+```{r}
+pred <- predict(lr, newdata = subset(testset, select = -Sales))
+RMSE(pred = pred, obs = testset$Sales)
+```
+
+```{r}
+lr2 <- lm(Sales~ Quantity + UnitPrice + time, data = trainset)
+summary(lr2)
+plot(predict(lr2, newdata = subset(testset, select = -Sales)), testset$Sales)
+```
+
+```{r}
+pred <- predict(lr2, newdata = subset(testset, select = -Sales))
+RMSE(pred = pred, obs = testset$Sales)
+```
