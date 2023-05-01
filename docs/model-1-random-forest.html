@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 5 Reflections | EDA</title>
-  <meta name="description" content="Chapter 5 Reflections | EDA" />
+  <title>Chapter 2 [Model 1] Random Forest | EDA</title>
+  <meta name="description" content="Chapter 2 [Model 1] Random Forest | EDA" />
   <meta name="generator" content="bookdown 0.33 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 5 Reflections | EDA" />
+  <meta property="og:title" content="Chapter 2 [Model 1] Random Forest | EDA" />
   <meta property="og:type" content="book" />
   
   
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 5 Reflections | EDA" />
+  <meta name="twitter:title" content="Chapter 2 [Model 1] Random Forest | EDA" />
   
   
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="model-3-linear-regression.html"/>
-
+<link rel="prev" href="index.html"/>
+<link rel="next" href="model-2-tree-regression.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -139,71 +139,53 @@
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="reflections" class="section level1 hasAnchor" number="5">
-<h1><span class="header-section-number">Chapter 5</span> Reflections<a href="reflections.html#reflections" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<div id="a-summary-three-models" class="section level2 hasAnchor" number="5.1">
-<h2><span class="header-section-number">5.1</span> A Summary Three Models<a href="reflections.html#a-summary-three-models" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<table>
-<thead>
-<tr class="header">
-<th align="left">Model</th>
-<th align="right">RMSE</th>
-<th align="left">run_time</th>
-<th align="left">interpretability</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">Random Forest Regression</td>
-<td align="right">3.57</td>
-<td align="left">5.266414 secs</td>
-<td align="left">Hard</td>
-</tr>
-<tr class="even">
-<td align="left">Tree Regression</td>
-<td align="right">1.19</td>
-<td align="left">0.045531 secs</td>
-<td align="left">Medium</td>
-</tr>
-<tr class="odd">
-<td align="left">Linear Regression</td>
-<td align="right">6.89</td>
-<td align="left">0.001991 secs</td>
-<td align="left">Easy</td>
-</tr>
-</tbody>
-</table>
-<p>Tree Regression has the greatest performance of the three Regression Models, and it took 0.076 seconds for Tree model to fit 5000 pieces of data. Random Forest Regression came in second, however the model is so complex that it takes 5.33 seconds to fit 5000 data points. Random Forest Regression would take even longer if we used the original dataset (500,000 data points). Even while we can use tools like VIP, PDP, and LIME to visualize and analyze Random Forest, we cannot gain a whole view of it. Linear Regression is incredibly efficient in terms of run time and is also simple to interpret. Our data collection, on the other hand, is clearly non-linear. As a result, the RMSE for Linear Regression is the highest among three.</p>
-<p>The <strong>Online Retail Data Set</strong> appears to be best suited for Tree Regression. It performs well in predicting new data, and fitting a tree model takes less time than Random Forest. We can learn how each factor contributes to the model using the tools VIP and SHAP.</p>
+<div id="model-1-random-forest" class="section level1 hasAnchor" number="2">
+<h1><span class="header-section-number">Chapter 2</span> [Model 1] Random Forest<a href="model-1-random-forest.html#model-1-random-forest" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="perform-random-forest-regression" class="section level2 hasAnchor" number="2.1">
+<h2><span class="header-section-number">2.1</span> Perform Random Forest Regression<a href="model-1-random-forest.html#perform-random-forest-regression" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<pre><code>## 
+## Call:
+##  randomForest(formula = Sales ~ ., data = trainset, ntree = 1000,      importance = TRUE) 
+##                Type of random forest: regression
+##                      Number of trees: 1000
+## No. of variables tried at each split: 1
+## 
+##           Mean of squared residuals: 4088.363
+##                     % Var explained: 13.87</code></pre>
+<pre><code>## [1] &quot;The RMSE is: 51.6027152860615&quot;</code></pre>
+<p><img src="finalproj_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+<p>We can see from the image above that there are many outliers in our data, which reduces prediction performance. Furthermore, the RMSE for this model is around 36.65 and only 35.33% of variance can be explained by this model. We must eliminate the outliers to get a better result. For the next two models, I will only use the dataset without the outliers.</p>
 </div>
-<div id="discussion" class="section level2 hasAnchor" number="5.2">
-<h2><span class="header-section-number">5.2</span> Discussion<a href="reflections.html#discussion" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<ul>
-<li><p><strong>Do the models have concurrent or conflicting interpretations? Can you explain why?</strong></p>
-<p>Yes, different models can have concurrent or conflicting interpretations because they rely on different <code>assumptions</code>, <code>data</code>, and <code>algorithms</code>. For example, a linear regression model might suggest that there is a linear relationship between two variables, while a nonlinear model might suggest a more complex relationship.</p></li>
-<li><p><strong>Do some models offer more insight than others?</strong></p>
-<p>Yes, for the data set used in this project, Tree Regression offers more insight. It is able to capture the mechanisms or processes hiding under the data set.</p></li>
-<li><p><strong>Is it worth losing interpretability/increasing model complexity? Can the simpler model do just as well? Why or why not?</strong></p>
-<p>It depends. We prone to choose simpler model if it perform as good as a more complex one, because simpler models are:</p>
-<ol style="list-style-type: decimal">
-<li>robust to overfitting.</li>
-<li>easier to understand and communicate to others.</li>
-<li>less computationally expensive to train and use.</li>
-</ol></li>
-</ul>
-<div id="limitation" class="section level3 hasAnchor" number="5.2.1">
-<h3><span class="header-section-number">5.2.1</span> Limitation<a href="reflections.html#limitation" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<ul>
-<li><p>We don’t have enough variation in the variable types, which is one of the project’s limitations. For instance, three of the five variables are about the time. By adding more types of variables, complex model, such as Random Forest, would have a better performance.</p></li>
-<li><p>The second drawback is that I’m unable to fine-tune the hyperparameter. ‘max_depth’ in Random Forest, for instance. Additionally, the computational complexity of my model prevents me from using bootstrapping.</p></li>
-<li><p>Finally, out data set used is not large enough. This will introduce limited variability, overfitting, and unrepresentative samples.</p></li>
-</ul>
+<div id="random-forest-regression-evaluation" class="section level2 hasAnchor" number="2.2">
+<h2><span class="header-section-number">2.2</span> Random Forest Regression Evaluation<a href="model-1-random-forest.html#random-forest-regression-evaluation" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<pre><code>## 
+## Call:
+##  randomForest(formula = Sales ~ ., data = trainset.adj, ntree = 1000,      importance = TRUE) 
+##                Type of random forest: regression
+##                      Number of trees: 1000
+## No. of variables tried at each split: 1
+## 
+##           Mean of squared residuals: 13.97715
+##                     % Var explained: 80.34</code></pre>
+<pre><code>## [1] &quot;The RMSE is: 3.79682328601374&quot;</code></pre>
+<p><img src="finalproj_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
+<p>We can see from the above figure that the data points center together after we remove the outliers and retrain the random forest model. The variance explained by the model reach to 80%. The RMSE drops to 4. Overall, the prediction accuracy improves significantly.</p>
 </div>
-<div id="future-directions" class="section level3 hasAnchor" number="5.2.2">
-<h3><span class="header-section-number">5.2.2</span> Future Directions<a href="reflections.html#future-directions" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>We might focus more on optimizing the hyperparameters for complex models in the future. This will improve the prediction capabilities of complex models. We can add extra models to the project as well, which will help us determine which one is most appropriate. Finally, we need to incorporate more variables and data sets into our project.</p>
+<div id="interpretation-of-random-forest-model" class="section level2 hasAnchor" number="2.3">
+<h2><span class="header-section-number">2.3</span> Interpretation of Random Forest Model<a href="model-1-random-forest.html#interpretation-of-random-forest-model" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<ul>
+<li><p>PDP</p>
+<p>Partial Dependence Plot is a type of data visualization technique commonly used in machine learning to understand the relationship between a target variable and one or more predictor variables.</p></li>
+</ul>
+<p><img src="finalproj_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+<p>We can deduce from the Partial Dependence Plot that there is a logarithmic growth relationship between <code>UnitPrice</code> and the intended variable, <code>Sales</code>. In other words, when the <code>UnitPrice</code> rises, <code>Sales</code> will rise logarithmically. When it comes to the relationship between <code>Quantity</code> and <code>Sales</code>, when <code>Quantity</code> ranges between 0 and 25, <code>Sales</code> will increase dramatically. <code>Sales</code> will increase gradually for quantities of more than 25. As <code>time</code> increases, there is a steady diminishing tendency. That is, customers tend to buy less at the end of the day. The plot also implies that the <code>month</code> and <code>week</code> have little influence on total sales because their lines are very flat.</p>
+<ul>
+<li><p>VIP</p>
+<p>Variance Importance Plot is a graphical representation of the importance of each predictor variable in a statistical or machine learning model.</p></li>
+</ul>
+<p><img src="finalproj_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
+<p>The graphic makes it obvious that quantity, followed by unit price and time, is the most crucial factor in predicting total sales. The time variable is much less significant than the other two, though. Finally, week and month are two factors that are not important in the Ramdom Forest Regression model. This plot conveys the results from the Partial Dependence Plot.</p>
 
-</div>
 </div>
 </div>
             </section>
@@ -211,8 +193,8 @@
           </div>
         </div>
       </div>
-<a href="model-3-linear-regression.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="model-2-tree-regression.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -243,7 +225,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/wangyeye66/5293FinalProj/edit/main/reflections.Rmd",
+"link": "https://github.com/wangyeye66/5293FinalProj/edit/main/model1.Rmd",
 "text": "Edit"
 },
 "history": {
@@ -251,7 +233,7 @@ gitbook.start({
 "text": null
 },
 "view": {
-"link": "https://github.com/wangyeye66/5293FinalProj/blob/main/reflections.Rmd",
+"link": "https://github.com/wangyeye66/5293FinalProj/blob/main/model1.Rmd",
 "text": null
 },
 "download": null,

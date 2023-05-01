@@ -1,12 +1,8 @@
 # [Model 1] Random Forest
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
-```
-
 ```{r}
 library(randomForest)
+library(caret)
 
 data <- read.csv('online_retail_cleaned.csv')
 data.adj <- read.csv('online_retail_cleaned_adjusted.csv')
@@ -28,13 +24,17 @@ testset.adj <- data.adj[ind==2, ]
 testset.adj <- subset(testset.adj, select = -X)
 ```
 
-### Perform Random Forest Regression
+## Perform Random Forest Regression
+
 ```{r}
 # perform random forest regression
 rf <- randomForest(Sales~., data =trainset, ntree=1000, importance=TRUE)
 
 # perform random forest regression on dataset without outliers
+start_time <- Sys.time()
 rf.adj <- randomForest(Sales~., data = trainset.adj, ntree = 1000, importance = TRUE)
+end_time <- Sys.time()
+time1 <- end_time-start_time
 ```
 
 ```{r}
@@ -45,9 +45,12 @@ print(paste('The RMSE is:', RMSE(pred = pred, obs = testset$Sales)))
 
 # visualize predict value 
 plot(predict(rf, newdata = subset(testset, select = -Sales)), testset$Sales, 
-     main = 'Predicted values compared with True values')
+     main = 'Predicted values vs. True values')
 ```
-We can see from the image above that there are many outliers in our data, which reduces prediction performance. Furthermore, the RMSE for this model is around 97 and only 10% of variacne can be explained by this model. We must eliminate the outliers to get a better result.
+
+We can see from the image above that there are many outliers in our data, which reduces prediction performance. Furthermore, the RMSE for this model is around 36.65 and only 35.33% of variance can be explained by this model. We must eliminate the outliers to get a better result. For the next two models, I will only use the dataset without the outliers.
+
+## Random Forest Regression Evaluation
 
 ```{r}
 print(rf.adj)
@@ -57,39 +60,45 @@ print(paste('The RMSE is:', RMSE(pred = pred, obs = testset.adj$Sales)))
 plot(predict(rf.adj, newdata = subset(testset.adj, select = -Sales)), testset.adj$Sales, 
      main = 'Predicted values compared with True values')
 ```
-We can see from the above figure that the data points center together after we remove the outliers and retrain the random forest model. The variance explained by the model reach to almost 80%. The RMSE drops to 4. Overall, the prediction accuracy improves significantly.
 
+We can see from the above figure that the data points center together after we remove the outliers and retrain the random forest model. The variance explained by the model reach to 80%. The RMSE drops to 4. Overall, the prediction accuracy improves significantly.
 
-### Interpretation of Random Forest Model
+## Interpretation of Random Forest Model
+
+-   PDP
+
+    Partial Dependence Plot is a type of data visualization technique commonly used in machine learning to understand the relationship between a target variable and one or more predictor variables.
+
 ```{r}
 # partial dependency plots
 library(pdp)
+library(dplyr)
+library(tidyr)
+library(purrr)
+
 var <- trainset.adj |>
   select(-Sales) |>
   select(where(is.numeric)) |>
   names()
 
-df <- map(var, ~(partial(rf.adj, pred.var = .x))) |>
+df <- map(var, ~pdp::partial(rf.adj, pred.var = .x)) |>
   map_df(pivot_longer, cols = 1)
 
 ggplot(df, aes(value, yhat)) +
   geom_line()+
   facet_wrap(~name, scales = 'free_x')
 
-#df <- partial(rf.adj, pred.var = "month")
-#ggplot(df, aes(month, yhat)) + geom_line()
-
-
 ```
+
+We can deduce from the Partial Dependence Plot that there is a logarithmic growth relationship between `UnitPrice` and the intended variable, `Sales`. In other words, when the `UnitPrice` rises, `Sales` will rise logarithmically. When it comes to the relationship between `Quantity` and `Sales`, when `Quantity` ranges between 0 and 25, `Sales` will increase dramatically. `Sales` will increase gradually for quantities of more than 25. As `time` increases, there is a steady diminishing tendency. That is, customers tend to buy less at the end of the day. The plot also implies that the `month` and `week` have little influence on total sales because their lines are very flat.
+
+-   VIP
+
+    Variance Importance Plot is a graphical representation of the importance of each predictor variable in a statistical or machine learning model.
+
 ```{r}
 library(vip)
 vip(rf.adj, method ='firm')
 ```
-```{r}
-library(lime)
-explainer <- lime(trainset.adj, as_classifier(rf.adj),
-                  bin_continuous =  TRUE, quantile_bins = TRUE)
-explanation <-  lime::explain(testset.adj, explainer, n_labels = 1, n_features = 5)
-explanation |>
-  plot_features()
-```
+
+The graphic makes it obvious that quantity, followed by unit price and time, is the most crucial factor in predicting total sales. The time variable is much less significant than the other two, though. Finally, week and month are two factors that are not important in the Ramdom Forest Regression model. This plot conveys the results from the Partial Dependence Plot.

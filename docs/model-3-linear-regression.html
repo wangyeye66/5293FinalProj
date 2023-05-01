@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 5 Reflections | EDA</title>
-  <meta name="description" content="Chapter 5 Reflections | EDA" />
+  <title>Chapter 4 [Model 3] Linear Regression | EDA</title>
+  <meta name="description" content="Chapter 4 [Model 3] Linear Regression | EDA" />
   <meta name="generator" content="bookdown 0.33 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 5 Reflections | EDA" />
+  <meta property="og:title" content="Chapter 4 [Model 3] Linear Regression | EDA" />
   <meta property="og:type" content="book" />
   
   
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 5 Reflections | EDA" />
+  <meta name="twitter:title" content="Chapter 4 [Model 3] Linear Regression | EDA" />
   
   
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="model-3-linear-regression.html"/>
-
+<link rel="prev" href="model-2-tree-regression.html"/>
+<link rel="next" href="reflections.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -139,71 +139,45 @@
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="reflections" class="section level1 hasAnchor" number="5">
-<h1><span class="header-section-number">Chapter 5</span> Reflections<a href="reflections.html#reflections" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<div id="a-summary-three-models" class="section level2 hasAnchor" number="5.1">
-<h2><span class="header-section-number">5.1</span> A Summary Three Models<a href="reflections.html#a-summary-three-models" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<table>
-<thead>
-<tr class="header">
-<th align="left">Model</th>
-<th align="right">RMSE</th>
-<th align="left">run_time</th>
-<th align="left">interpretability</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">Random Forest Regression</td>
-<td align="right">3.57</td>
-<td align="left">5.266414 secs</td>
-<td align="left">Hard</td>
-</tr>
-<tr class="even">
-<td align="left">Tree Regression</td>
-<td align="right">1.19</td>
-<td align="left">0.045531 secs</td>
-<td align="left">Medium</td>
-</tr>
-<tr class="odd">
-<td align="left">Linear Regression</td>
-<td align="right">6.89</td>
-<td align="left">0.001991 secs</td>
-<td align="left">Easy</td>
-</tr>
-</tbody>
-</table>
-<p>Tree Regression has the greatest performance of the three Regression Models, and it took 0.076 seconds for Tree model to fit 5000 pieces of data. Random Forest Regression came in second, however the model is so complex that it takes 5.33 seconds to fit 5000 data points. Random Forest Regression would take even longer if we used the original dataset (500,000 data points). Even while we can use tools like VIP, PDP, and LIME to visualize and analyze Random Forest, we cannot gain a whole view of it. Linear Regression is incredibly efficient in terms of run time and is also simple to interpret. Our data collection, on the other hand, is clearly non-linear. As a result, the RMSE for Linear Regression is the highest among three.</p>
-<p>The <strong>Online Retail Data Set</strong> appears to be best suited for Tree Regression. It performs well in predicting new data, and fitting a tree model takes less time than Random Forest. We can learn how each factor contributes to the model using the tools VIP and SHAP.</p>
+<div id="model-3-linear-regression" class="section level1 hasAnchor" number="4">
+<h1><span class="header-section-number">Chapter 4</span> [Model 3] Linear Regression<a href="model-3-linear-regression.html#model-3-linear-regression" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="perform-linear-regression" class="section level2 hasAnchor" number="4.1">
+<h2><span class="header-section-number">4.1</span> Perform Linear Regression<a href="model-3-linear-regression.html#perform-linear-regression" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<pre><code>## 
+## Call:
+## lm(formula = Sales ~ ., data = trainset)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -47.790  -4.115  -1.958   3.914  25.821 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  9.25464    0.69374  13.340   &lt;2e-16 ***
+## Quantity     0.49540    0.01239  39.988   &lt;2e-16 ***
+## UnitPrice    1.18164    0.03500  33.762   &lt;2e-16 ***
+## month        0.01222    0.03068   0.398    0.690    
+## week        -0.04792    0.05790  -0.828    0.408    
+## time        -0.44342    0.04418 -10.036   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 6.626 on 3789 degrees of freedom
+## Multiple R-squared:  0.3835, Adjusted R-squared:  0.3827 
+## F-statistic: 471.4 on 5 and 3789 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
-<div id="discussion" class="section level2 hasAnchor" number="5.2">
-<h2><span class="header-section-number">5.2</span> Discussion<a href="reflections.html#discussion" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<ul>
-<li><p><strong>Do the models have concurrent or conflicting interpretations? Can you explain why?</strong></p>
-<p>Yes, different models can have concurrent or conflicting interpretations because they rely on different <code>assumptions</code>, <code>data</code>, and <code>algorithms</code>. For example, a linear regression model might suggest that there is a linear relationship between two variables, while a nonlinear model might suggest a more complex relationship.</p></li>
-<li><p><strong>Do some models offer more insight than others?</strong></p>
-<p>Yes, for the data set used in this project, Tree Regression offers more insight. It is able to capture the mechanisms or processes hiding under the data set.</p></li>
-<li><p><strong>Is it worth losing interpretability/increasing model complexity? Can the simpler model do just as well? Why or why not?</strong></p>
-<p>It depends. We prone to choose simpler model if it perform as good as a more complex one, because simpler models are:</p>
-<ol style="list-style-type: decimal">
-<li>robust to overfitting.</li>
-<li>easier to understand and communicate to others.</li>
-<li>less computationally expensive to train and use.</li>
-</ol></li>
-</ul>
-<div id="limitation" class="section level3 hasAnchor" number="5.2.1">
-<h3><span class="header-section-number">5.2.1</span> Limitation<a href="reflections.html#limitation" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<ul>
-<li><p>We don’t have enough variation in the variable types, which is one of the project’s limitations. For instance, three of the five variables are about the time. By adding more types of variables, complex model, such as Random Forest, would have a better performance.</p></li>
-<li><p>The second drawback is that I’m unable to fine-tune the hyperparameter. ‘max_depth’ in Random Forest, for instance. Additionally, the computational complexity of my model prevents me from using bootstrapping.</p></li>
-<li><p>Finally, out data set used is not large enough. This will introduce limited variability, overfitting, and unrepresentative samples.</p></li>
-</ul>
+<div id="linear-regression-evaluation" class="section level2 hasAnchor" number="4.2">
+<h2><span class="header-section-number">4.2</span> Linear Regression Evaluation<a href="model-3-linear-regression.html#linear-regression-evaluation" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><img src="finalproj_files/figure-html/unnamed-chunk-35-1.png" width="672" /></p>
+<pre><code>## [1] &quot;The RMSE is: 6.49865708953365&quot;</code></pre>
+<p>We can simply interpret the the liner model by reading its summary. According to our sampled data, every unit increase in <code>Quantity</code> increases total sales by 0.65. The total sale will increase by 1.26 for every unit increase in <code>UnitPrice</code>. The total sale will reduce by 0.38 for every unit increase in <code>time</code>. However, in a linear regression model, the factors <code>month</code> and <code>week</code> have no significance in predicting sales.The p-values for <code>month</code> and <code>week</code> also suggests that there is no association between total sales and these two factors in a linear regression model.</p>
+<p>The RMSE is 6.89, which is the highest compared to the previous two models. From the predicted values vs. true values plot, the linear model underestimate the total sales.</p>
 </div>
-<div id="future-directions" class="section level3 hasAnchor" number="5.2.2">
-<h3><span class="header-section-number">5.2.2</span> Future Directions<a href="reflections.html#future-directions" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>We might focus more on optimizing the hyperparameters for complex models in the future. This will improve the prediction capabilities of complex models. We can add extra models to the project as well, which will help us determine which one is most appropriate. Finally, we need to incorporate more variables and data sets into our project.</p>
+<div id="interpretation-of-linear-model" class="section level2 hasAnchor" number="4.3">
+<h2><span class="header-section-number">4.3</span> Interpretation of Linear Model<a href="model-3-linear-regression.html#interpretation-of-linear-model" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><img src="finalproj_files/figure-html/unnamed-chunk-36-1.png" width="672" /></p>
+<p>The Variance Importance Plot of Linear Regression model is similar to Random Forest Regression model. <code>Quantity</code> and <code>UnitPrice</code> are still two most important variable in predicting <code>Sales</code>. The importance of <code>time</code> is low, but not as negligible as it was in Tree Regression model.</p>
 
-</div>
 </div>
 </div>
             </section>
@@ -211,8 +185,8 @@
           </div>
         </div>
       </div>
-<a href="model-3-linear-regression.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-
+<a href="model-2-tree-regression.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="reflections.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -243,7 +217,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/wangyeye66/5293FinalProj/edit/main/reflections.Rmd",
+"link": "https://github.com/wangyeye66/5293FinalProj/edit/main/model3.Rmd",
 "text": "Edit"
 },
 "history": {
@@ -251,7 +225,7 @@ gitbook.start({
 "text": null
 },
 "view": {
-"link": "https://github.com/wangyeye66/5293FinalProj/blob/main/reflections.Rmd",
+"link": "https://github.com/wangyeye66/5293FinalProj/blob/main/model3.Rmd",
 "text": null
 },
 "download": null,

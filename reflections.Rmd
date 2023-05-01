@@ -1,2 +1,46 @@
 # Reflections
 
+## A Summary Three Models
+
+```{r echo =FALSE, results='asis'}
+library(knitr)
+# create a dataframe with two columns: name and age
+df <- data.frame(Model = c("Random Forest Regression", "Tree Regression", "Linear Regression"), RMSE = c(3.57, 1.19, 6.89))
+df$run_time = c(time1, time2, time3)
+df$interpretability = c('Hard','Medium','Easy')
+kable(df,booktabs = TRUE)
+```
+
+Tree Regression has the greatest performance of the three Regression Models, and it took 0.076 seconds for Tree model to fit 5000 pieces of data. Random Forest Regression came in second, however the model is so complex that it takes 5.33 seconds to fit 5000 data points. Random Forest Regression would take even longer if we used the original dataset (500,000 data points). Even while we can use tools like VIP, PDP, and LIME to visualize and analyze Random Forest, we cannot gain a whole view of it. Linear Regression is incredibly efficient in terms of run time and is also simple to interpret. Our data collection, on the other hand, is clearly non-linear. As a result, the RMSE for Linear Regression is the highest among three.
+
+The **Online Retail Data Set** appears to be best suited for Tree Regression. It performs well in predicting new data, and fitting a tree model takes less time than Random Forest. We can learn how each factor contributes to the model using the tools VIP and SHAP.
+
+## Discussion
+
+-   **Do the models have concurrent or conflicting interpretations? Can you explain why?**
+
+    Yes, different models can have concurrent or conflicting interpretations because they rely on different `assumptions`, `data`, and `algorithms`. For example, a linear regression model might suggest that there is a linear relationship between two variables, while a nonlinear model might suggest a more complex relationship.
+
+-   **Do some models offer more insight than others?**
+
+    Yes, for the data set used in this project, Tree Regression offers more insight. It is able to capture the mechanisms or processes hiding under the data set.
+
+-   **Is it worth losing interpretability/increasing model complexity? Can the simpler model do just as well? Why or why not?**
+
+    It depends. We prone to choose simpler model if it perform as good as a more complex one, because simpler models are:
+
+    1.  robust to overfitting.
+    2.  easier to understand and communicate to others.
+    3.  less computationally expensive to train and use.
+
+### Limitation
+
+-   We don't have enough variation in the variable types, which is one of the project's limitations. For instance, three of the five variables are about the time. By adding more types of variables, complex model, such as Random Forest, would have a better performance.
+
+-   The second drawback is that I'm unable to fine-tune the hyperparameter. 'max_depth' in Random Forest, for instance. Additionally, the computational complexity of my model prevents me from using bootstrapping.
+
+-   Finally, out data set used is not large enough. This will introduce limited variability, overfitting, and unrepresentative samples.
+
+### Future Directions
+
+We might focus more on optimizing the hyperparameters for complex models in the future. This will improve the prediction capabilities of complex models. We can add extra models to the project as well, which will help us determine which one is most appropriate. Finally, we need to incorporate more variables and data sets into our project.

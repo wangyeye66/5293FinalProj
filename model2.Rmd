@@ -1,10 +1,5 @@
 # [Model 2] Tree Regression
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
-```
-
 ```{r}
 library(rpart)
 
@@ -22,30 +17,74 @@ testset <- data[ind==2, ]
 testset <- subset(testset, select = -X)
 ```
 
+## Perform Tree Regression
+
 ```{r}
+start_time <- Sys.time()
 # Perform Regression Tree
 library(rpart.plot)
 dt <- rpart(Sales~., method = 'anova',
             control = list(minsplit = 10, maxdepth= 12, xval =10, cp = 0),
             data = trainset)
+end_time <- Sys.time()
+time2 <- end_time-start_time
 
 rpart.plot(dt)
 ```
 
+The regression tree plot is impossible to interpret. By setting `cp = 0`, the expanded as much as it could without being pruned. Although we human are unable to interpret any information from the plot, the machine will understand it thoroughly, and offer accurate predictions.
 
+## Tree Regression Evaluation
 
 ```{r}
 # 
 pred <- predict(dt, subset(testset, select = -Sales), method = 'anova')
 plot(predict(dt, newdata = subset(testset, select = -Sales)), testset$Sales)
-RMSE(pred = pred, obs = testset$Sales)
+print(paste('The RMSE is:', RMSE(pred = pred, obs = testset$Sales)))
+
 ```
+
+When we plot the predict values against the true values, we observe that it forms a diagnal line. This means the predict values are really close to the true values. The result of RMSE is only 1.19, also suggesting that the model has great performance in predicting Sales based on Quantity, UnitPrice, month, week and time.
+
+## Interpretation of Tree Regression Model
+
+-   VIP
 
 ```{r}
-
-start_time <- Sys.time()
-end_time <- Sys.time()
-time <- end_time-start_time
-time
-
+library(vip)
+vip(dt, method ='firm')
 ```
+The Variance Importance Plot suggests that only `Quantity` and `UnitPrice` are important in the Tree Regression model. The other three variables are neglected in this model. 
+
+
+-   SHAP
+
+SHAP (SHapley Additive exPlanations) is a method that explains how individual predictions are made by a machine learning model. SHAP deconstructs a prediction into a sum of contributions from each of the model's input variables.
+
+```{r}
+library(fastshap)
+library(tibble)
+
+pred <- function(model, newdata) { predict(model, newdata = newdata, type = "vector")}
+
+shap_values <- fastshap::explain(
+  dt,
+  X = trainset,
+  feature_names = colnames(trainset |> select(-Sales)),
+  pred_wrapper = pred,
+  nsim =5,
+  newdata= testset,
+  adjust = TRUE
+)
+
+shap <- as.data.frame(shap_values) |>
+  tibble::rownames_to_column("id") |>
+  pivot_longer(-id, names_to = "var", values_to = "shap_value")
+
+ggplot(shap, aes(x = shap_value, y = reorder(var, shap_value, sd))) +
+  geom_boxplot() +
+  theme_classic()
+  
+```
+
+From the above plot, we may infer that `Quantity` and `UnitPrice` had significant impacts on the model's prediction. Note that these two variables also have large standard deviation. We may conclude that most of the variance in `Sales` come from these two variables. Similar to the results from VIP, `month`, `week` and `time` do not have enough influence in prediction.

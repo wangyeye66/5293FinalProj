@@ -5,10 +5,9 @@ date: "2023-04-10"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
-```
+## Read data from Excel file
+
+After loading the data, use `summary()` to get an overview of it.
 
 ```{r}
 library(readxl)
@@ -25,7 +24,9 @@ data %>% is.na %>% colSums
 
 There are many NAs in the column CustomerID. Since this column is irrelavent to our analysis, we can simply remove it.
 
-### Data Cleaning
+## Data Cleaning
+
+Remove `NULL` values from the data, and reprint the summary of the data.
 
 ```{r}
 # remove free orders
@@ -37,7 +38,9 @@ data <- data %>% select(-c(CustomerID))
 summary(data)
 ```
 
-### Data pre-processing
+## Data pre-processing
+
+I changed the `description` and `country` column to factor, and did the datetime processing. In particular, I extracted the column `InvoiceDate`, separating out four new columns: `date`, `month`, `week`, and `time`. The `Sales` column is then calculated using `Quantity` and `UnitPrice`.
 
 ```{r}
 # Transform description and country as factor
@@ -56,9 +59,9 @@ data$Sales <- data$Quantity*data$UnitPrice
 head(data)
 ```
 
-### Exploratory Data Analysis
+## Exploratory Data Analysis
 
-1. Most sold Products
+### 1. Most sold Products
 
 ```{r}
 # top 10 products
@@ -75,8 +78,9 @@ p1 %>% ggplot(aes(x=Description, y=count)) +
   ylab('Number of products sold') +
   ggtitle('Most Sold Products by Customers')
 ```
+The bar plot above depicts the top ten most popular products on this online retail website. According to the plot, the most popular product is the 'White Hanging Heart T-Light Holder,' with approximately 2500 units sold. The products 'Regency Cakestand 3 Tier' and 'Jumbo Bag Red Retrospot' are also popular on the online retail website.
 
-2. Costomer base across the countries
+### 2. Costomer base across the countries
 
 ```{r}
 ggplot(data=data, aes(x=Country))+
@@ -86,9 +90,10 @@ ggplot(data=data, aes(x=Country))+
   ggtitle("UK shares the major customer base")+
   ylab("frequency based on orders")
 ```
-Since almost all of users are from United Kingdom, it would be almost impossible to predict sales using country factor. Thus, we are going to drop the country column for this project.
 
-3. Total Sales by Hour
+Given that almost all users are from the United Kingdom, it would be nearly impossible to predict sales using the country factor. As a result, we will remove the `country` column from this project.
+
+### 3. Total Sales by Hour
 
 Note that the original dataset does not include sales information from 9 p.m. to 6 a.m. It is possible that this is due to website maintenance, or someone may have excluded this data due to the low number of sales during those hours.
 
@@ -109,7 +114,9 @@ ggplot(data = hourly, aes(x= time, y = Sales, group =1))+
 
 ```
 
-4. Total Sales by Day
+The line graph depicts total sales by hour. The majority of sales occur between 10 a.m. and 3 p.m. This makes logical because people are more active during this time period. It's worth noting that this line plot is quite symmetric. People are less likely to buy in the early morning and late at night.
+
+### 4. Total Sales by Day
 
 AS mentioned before, the dataset does not include sales information of Saturday due to similar reasons.
 
@@ -134,8 +141,9 @@ ggplot(data = daily, aes(x= week, y = Sales, group = 1))+
   xlab('Days of the week')
 
 ```
+The line plot Total Sales by Day depicts costomers' shopping habit. Sales are higher form Monday to Thursday, while sales drops significantly on Friday and weekends.
 
-5. Total Sales by Month
+### 5. Total Sales by Month
 
 ```{r}
 # calculating the total sales by month 
@@ -153,7 +161,10 @@ ggplot(data=p5,aes(x=ordered(month, month.name), y=Sales, group =1))+ggtitle("To
 
 ```
 
-### Change Categorical to Numerical
+This line plot depicts the month-to-month change in online retail sales. The figure shows that sales are high from September to December. The peak month is November. This figure makes sense because there are numerous festivities from September through December, such as Christmas, Thanksgiving, and New Year's. We can deduce that people shop for gifts online. Another trend in the figure is a significant dip in January, and total sales for the remainder of the year are relatively low. It is most likely due to limited budgets and a lack of festivals from January to August.
+
+## Change Categorical to Numerical
+
 ```{r}
 mydata <- subset(data, select = -c(InvoiceNo, StockCode, Description, InvoiceDate,date, Country))
 mydata$month <-recode(mydata$month,December = 12, November =11, October = 10,
@@ -166,9 +177,10 @@ mydata$time <- as.numeric(mydata$time)
 cor(subset(mydata, select = -Sales))
 ```
 
-All of dependent variables are not correlated to each other, so we will keep these factors.
+I converted categorical data to numerical data in this stage. For example, 'December' equals 12, 'Monday' equals 1, and so on. The variables are next checked for multicollinearity by calculating the correlations between them. Except for the diagnal, the values in the above table are very low. As a result, we concluded that all of the variables are unrelated, and we should keep them.
 
-### Checking for Principal Components
+## Checking for Principal Components
+
 ```{r}
 data.pca <- prcomp(subset(mydata, select = -Sales), center = T,scale = T)
 summary(data.pca)
@@ -183,18 +195,23 @@ g<-qplot(x = 1:5, y = cumsum(pve), geom = 'line',
 
 g + scale_x_continuous(breaks = seq(0, 5, by = 1))
 ```
-Almost a linear curve, that means we have good choice of dependent variables.
 
-### Drop Outliers
+The Scree plot is almost a linear curve, that means we have good choice of dependent variables.
+
+## Drop Outliers
+
 ```{r}
 q <- quantile(mydata$Sales, probs= c(.25, .75))
 iqr <- IQR(mydata$Sales)
 mydata.adj <- subset(mydata, mydata$Sales>(q[1]-1.5*iqr) & mydata$Sales < (q[2]+1.5*iqr))
 ```
 
-### save cleaned data
+When I was implementing the first model, I noticed that the original dataset has a large number of outliers. To improve prediction precision, I removed the first and fourth quantiles from the original data and then sampled 5000 data points from the modified data.
 
-The original dataset has around 540,000 pieces of data, to make it computationally efficient, I randomly selected 5000 data.
+## Save Cleaned Data
+
+The original dataset has around **540,000** pieces of data, to make it computationally efficient, I randomly selected **5000** data, and saved it as csv file.
+
 ```{r}
 mydata.sample <- mydata[sample(nrow(mydata), "5000"), ]
 mydata.sample.adj <- mydata.adj[sample(nrow(mydata.adj), "5000"), ]

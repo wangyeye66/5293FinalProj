@@ -1,10 +1,5 @@
 # [Model 3] Linear Regression
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
-```
-
 ```{r}
 library(readxl)
 library(tidyverse)
@@ -14,7 +9,7 @@ library(datasets)
 library(caret)
 library(rpart)
 
-data <- read.csv('online_retail_cleaned.csv')
+data <- read.csv('online_retail_cleaned_adjusted.csv')
 # str(data)
 ```
 
@@ -28,24 +23,35 @@ testset <- data[ind==2, ]
 testset <- subset(testset, select = -X)
 ```
 
+## Perform Linear Regression
+
 ```{r}
+start_time <- Sys.time()
 lr <- lm(Sales~., data = trainset)
+end_time <- Sys.time()
+time3 <- end_time-start_time
+
 summary(lr)
-plot(predict(lr, newdata = subset(testset, select = -Sales)), testset$Sales)
 ```
 
+## Linear Regression Evaluation
+
 ```{r}
+plot(predict(lr, newdata = subset(testset, select = -Sales)), testset$Sales,
+     main = 'Predicted values vs. True values')
 pred <- predict(lr, newdata = subset(testset, select = -Sales))
-RMSE(pred = pred, obs = testset$Sales)
+print(paste('The RMSE is:', RMSE(pred = pred, obs = testset$Sales)))
 ```
 
-```{r}
-lr2 <- lm(Sales~ Quantity + UnitPrice + time, data = trainset)
-summary(lr2)
-plot(predict(lr2, newdata = subset(testset, select = -Sales)), testset$Sales)
-```
+We can simply interpret the the liner model by reading its summary. According to our sampled data, every unit increase in `Quantity` increases total sales by 0.65. The total sale will increase by 1.26 for every unit increase in `UnitPrice`. The total sale will reduce by 0.38 for every unit increase in `time`. However, in a linear regression model, the factors `month` and `week` have no significance in predicting sales.The p-values for `month` and `week` also suggests that there is no association between total sales and these two factors in a linear regression model.
+
+The RMSE is 6.89, which is the highest compared to the previous two models. From the predicted values vs. true values plot, the linear model underestimate the total sales.
+
+## Interpretation of Linear Model
 
 ```{r}
-pred <- predict(lr2, newdata = subset(testset, select = -Sales))
-RMSE(pred = pred, obs = testset$Sales)
+library(vip)
+vip(lr, method ='firm')
 ```
+
+The Variance Importance Plot of Linear Regression model is similar to Random Forest Regression model. `Quantity` and `UnitPrice` are still two most important variable in predicting `Sales`. The importance of `time` is low, but not as negligible as it was in Tree Regression model.
