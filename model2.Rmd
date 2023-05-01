@@ -44,7 +44,7 @@ print(paste('The RMSE is:', RMSE(pred = pred, obs = testset$Sales)))
 
 ```
 
-When we plot the predict values against the true values, we observe that it forms a diagnal line. This means the predict values are really close to the true values. The result of RMSE is only 1.19, also suggesting that the model has great performance in predicting Sales based on Quantity, UnitPrice, month, week and time.
+When we plot the predict values against the true values, we observe that it forms a diagnal line. This means the predict values are really close to the true values. The result of RMSE is only 1.6, also suggesting that the model has great performance in predicting Sales based on Quantity, UnitPrice, month, week and time.
 
 ## Interpretation of Tree Regression Model
 

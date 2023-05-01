@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 2 [Model 1] Random Forest | EDA</title>
-  <meta name="description" content="Chapter 2 [Model 1] Random Forest | EDA" />
+  <title>Chapter 2 [Model 1] Random Forest | IMLV Final Project</title>
+  <meta name="description" content="Chapter 2 [Model 1] Random Forest | IMLV Final Project" />
   <meta name="generator" content="bookdown 0.33 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 2 [Model 1] Random Forest | EDA" />
+  <meta property="og:title" content="Chapter 2 [Model 1] Random Forest | IMLV Final Project" />
   <meta property="og:type" content="book" />
   
   
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 2 [Model 1] Random Forest | EDA" />
+  <meta name="twitter:title" content="Chapter 2 [Model 1] Random Forest | IMLV Final Project" />
   
   
   
@@ -23,7 +23,7 @@
 <meta name="author" content="Han Wang" />
 
 
-<meta name="date" content="2023-04-10" />
+<meta name="date" content="2023-04-30" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -82,11 +82,11 @@
 <li class="chapter" data-level="1.6" data-path="index.html"><a href="index.html#data-pre-processing"><i class="fa fa-check"></i><b>1.6</b> Data pre-processing</a></li>
 <li class="chapter" data-level="1.7" data-path="index.html"><a href="index.html#exploratory-data-analysis"><i class="fa fa-check"></i><b>1.7</b> Exploratory Data Analysis</a>
 <ul>
-<li class="chapter" data-level="1.7.1" data-path="index.html"><a href="index.html#most-sold-products"><i class="fa fa-check"></i><b>1.7.1</b> 1. Most sold Products</a></li>
-<li class="chapter" data-level="1.7.2" data-path="index.html"><a href="index.html#costomer-base-across-the-countries"><i class="fa fa-check"></i><b>1.7.2</b> 2. Costomer base across the countries</a></li>
-<li class="chapter" data-level="1.7.3" data-path="index.html"><a href="index.html#total-sales-by-hour"><i class="fa fa-check"></i><b>1.7.3</b> 3. Total Sales by Hour</a></li>
-<li class="chapter" data-level="1.7.4" data-path="index.html"><a href="index.html#total-sales-by-day"><i class="fa fa-check"></i><b>1.7.4</b> 4. Total Sales by Day</a></li>
-<li class="chapter" data-level="1.7.5" data-path="index.html"><a href="index.html#total-sales-by-month"><i class="fa fa-check"></i><b>1.7.5</b> 5. Total Sales by Month</a></li>
+<li class="chapter" data-level="1.7.1" data-path="index.html"><a href="index.html#most-sold-products"><i class="fa fa-check"></i><b>1.7.1</b> Most sold Products</a></li>
+<li class="chapter" data-level="1.7.2" data-path="index.html"><a href="index.html#costomer-base-across-the-countries"><i class="fa fa-check"></i><b>1.7.2</b> Costomer base across the countries</a></li>
+<li class="chapter" data-level="1.7.3" data-path="index.html"><a href="index.html#total-sales-by-hour"><i class="fa fa-check"></i><b>1.7.3</b> Total Sales by Hour</a></li>
+<li class="chapter" data-level="1.7.4" data-path="index.html"><a href="index.html#total-sales-by-day"><i class="fa fa-check"></i><b>1.7.4</b> Total Sales by Day</a></li>
+<li class="chapter" data-level="1.7.5" data-path="index.html"><a href="index.html#total-sales-by-month"><i class="fa fa-check"></i><b>1.7.5</b> Total Sales by Month</a></li>
 </ul></li>
 <li class="chapter" data-level="1.8" data-path="index.html"><a href="index.html#change-categorical-to-numerical"><i class="fa fa-check"></i><b>1.8</b> Change Categorical to Numerical</a></li>
 <li class="chapter" data-level="1.9" data-path="index.html"><a href="index.html#checking-for-principal-components"><i class="fa fa-check"></i><b>1.9</b> Checking for Principal Components</a></li>
@@ -131,7 +131,7 @@
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">EDA</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">IMLV Final Project</a>
           </h1>
         </div>
 
@@ -150,11 +150,11 @@
 ##                      Number of trees: 1000
 ## No. of variables tried at each split: 1
 ## 
-##           Mean of squared residuals: 4088.363
-##                     % Var explained: 13.87</code></pre>
-<pre><code>## [1] &quot;The RMSE is: 51.6027152860615&quot;</code></pre>
+##           Mean of squared residuals: 2390.745
+##                     % Var explained: 21.33</code></pre>
+<pre><code>## [1] &quot;The RMSE is: 55.0840742993363&quot;</code></pre>
 <p><img src="finalproj_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
-<p>We can see from the image above that there are many outliers in our data, which reduces prediction performance. Furthermore, the RMSE for this model is around 36.65 and only 35.33% of variance can be explained by this model. We must eliminate the outliers to get a better result. For the next two models, I will only use the dataset without the outliers.</p>
+<p>We can see from the image above that there are many outliers in our data, which reduces prediction performance. Furthermore, the RMSE for this model is around 55.08 and only 21.33% of variance can be explained by this model. We must eliminate the outliers to get a better result. For the next two models, I will only use the dataset without the outliers.</p>
 </div>
 <div id="random-forest-regression-evaluation" class="section level2 hasAnchor" number="2.2">
 <h2><span class="header-section-number">2.2</span> Random Forest Regression Evaluation<a href="model-1-random-forest.html#random-forest-regression-evaluation" class="anchor-section" aria-label="Anchor link to header"></a></h2>
@@ -165,11 +165,11 @@
 ##                      Number of trees: 1000
 ## No. of variables tried at each split: 1
 ## 
-##           Mean of squared residuals: 13.97715
-##                     % Var explained: 80.34</code></pre>
-<pre><code>## [1] &quot;The RMSE is: 3.79682328601374&quot;</code></pre>
+##           Mean of squared residuals: 14.41007
+##                     % Var explained: 80.05</code></pre>
+<pre><code>## [1] &quot;The RMSE is: 3.87657226207381&quot;</code></pre>
 <p><img src="finalproj_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
-<p>We can see from the above figure that the data points center together after we remove the outliers and retrain the random forest model. The variance explained by the model reach to 80%. The RMSE drops to 4. Overall, the prediction accuracy improves significantly.</p>
+<p>We can see from the above figure that the data points center together after we remove the outliers and retrain the random forest model. The variance explained by the model reach to 80%. The RMSE drops to 3.87. Overall, the prediction accuracy improves significantly.</p>
 </div>
 <div id="interpretation-of-random-forest-model" class="section level2 hasAnchor" number="2.3">
 <h2><span class="header-section-number">2.3</span> Interpretation of Random Forest Model<a href="model-1-random-forest.html#interpretation-of-random-forest-model" class="anchor-section" aria-label="Anchor link to header"></a></h2>

@@ -5,7 +5,7 @@
 ```{r echo =FALSE, results='asis'}
 library(knitr)
 # create a dataframe with two columns: name and age
-df <- data.frame(Model = c("Random Forest Regression", "Tree Regression", "Linear Regression"), RMSE = c(3.57, 1.19, 6.89))
+df <- data.frame(Model = c("Random Forest Regression", "Tree Regression", "Linear Regression"), RMSE = c(3.87, 1.60, 7.54))
 df$run_time = c(time1, time2, time3)
 df$interpretability = c('Hard','Medium','Easy')
 kable(df,booktabs = TRUE)

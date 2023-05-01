@@ -48,7 +48,7 @@ plot(predict(rf, newdata = subset(testset, select = -Sales)), testset$Sales,
      main = 'Predicted values vs. True values')
 ```
 
-We can see from the image above that there are many outliers in our data, which reduces prediction performance. Furthermore, the RMSE for this model is around 36.65 and only 35.33% of variance can be explained by this model. We must eliminate the outliers to get a better result. For the next two models, I will only use the dataset without the outliers.
+We can see from the image above that there are many outliers in our data, which reduces prediction performance. Furthermore, the RMSE for this model is around 55.08 and only 21.33% of variance can be explained by this model. We must eliminate the outliers to get a better result. For the next two models, I will only use the dataset without the outliers.
 
 ## Random Forest Regression Evaluation
 
@@ -61,7 +61,7 @@ plot(predict(rf.adj, newdata = subset(testset.adj, select = -Sales)), testset.ad
      main = 'Predicted values compared with True values')
 ```
 
-We can see from the above figure that the data points center together after we remove the outliers and retrain the random forest model. The variance explained by the model reach to 80%. The RMSE drops to 4. Overall, the prediction accuracy improves significantly.
+We can see from the above figure that the data points center together after we remove the outliers and retrain the random forest model. The variance explained by the model reach to 80%. The RMSE drops to 3.87. Overall, the prediction accuracy improves significantly.
 
 ## Interpretation of Random Forest Model
 

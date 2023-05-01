@@ -1,8 +1,8 @@
 ---
-title: "EDA"
+title: "IMLV Final Project"
 author: "Han Wang"
-date: "2023-04-10"
-output: html_document
+date:  "`r Sys.Date()`"
+output: bookdown::bookdown_site
 ---
 
 ## Read data from Excel file
@@ -61,7 +61,7 @@ head(data)
 
 ## Exploratory Data Analysis
 
-### 1. Most sold Products
+### Most sold Products
 
 ```{r}
 # top 10 products
@@ -80,7 +80,7 @@ p1 %>% ggplot(aes(x=Description, y=count)) +
 ```
 The bar plot above depicts the top ten most popular products on this online retail website. According to the plot, the most popular product is the 'White Hanging Heart T-Light Holder,' with approximately 2500 units sold. The products 'Regency Cakestand 3 Tier' and 'Jumbo Bag Red Retrospot' are also popular on the online retail website.
 
-### 2. Costomer base across the countries
+### Costomer base across the countries
 
 ```{r}
 ggplot(data=data, aes(x=Country))+
@@ -93,7 +93,7 @@ ggplot(data=data, aes(x=Country))+
 
 Given that almost all users are from the United Kingdom, it would be nearly impossible to predict sales using the country factor. As a result, we will remove the `country` column from this project.
 
-### 3. Total Sales by Hour
+### Total Sales by Hour
 
 Note that the original dataset does not include sales information from 9 p.m. to 6 a.m. It is possible that this is due to website maintenance, or someone may have excluded this data due to the low number of sales during those hours.
 
@@ -116,7 +116,7 @@ ggplot(data = hourly, aes(x= time, y = Sales, group =1))+
 
 The line graph depicts total sales by hour. The majority of sales occur between 10 a.m. and 3 p.m. This makes logical because people are more active during this time period. It's worth noting that this line plot is quite symmetric. People are less likely to buy in the early morning and late at night.
 
-### 4. Total Sales by Day
+### Total Sales by Day
 
 AS mentioned before, the dataset does not include sales information of Saturday due to similar reasons.
 
@@ -143,7 +143,7 @@ ggplot(data = daily, aes(x= week, y = Sales, group = 1))+
 ```
 The line plot Total Sales by Day depicts costomers' shopping habit. Sales are higher form Monday to Thursday, while sales drops significantly on Friday and weekends.
 
-### 5. Total Sales by Month
+### Total Sales by Month
 
 ```{r}
 # calculating the total sales by month 
@@ -213,7 +213,9 @@ When I was implementing the first model, I noticed that the original dataset has
 The original dataset has around **540,000** pieces of data, to make it computationally efficient, I randomly selected **5000** data, and saved it as csv file.
 
 ```{r}
+set.seed(111)
 mydata.sample <- mydata[sample(nrow(mydata), "5000"), ]
+set.seed(111)
 mydata.sample.adj <- mydata.adj[sample(nrow(mydata.adj), "5000"), ]
 
 write.csv(mydata.sample, "./online_retail_cleaned.csv", row.names=TRUE)
